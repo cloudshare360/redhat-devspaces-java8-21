@@ -1,0 +1,1 @@
+# redhat-devspaces-java8-21
