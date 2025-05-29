@@ -1,0 +1,38 @@
+schemaVersion: 2.2.0
+metadata:
+  name: fullstack-dev-environment
+components:
+  - name: universal-image
+    container:
+      image: quay.io/devfile/universal-developer-image:latest
+      memoryLimit: 4Gi
+      cpuLimit: "2"
+commands:
+  - exec:
+      id: setup-sdkman
+      component: universal-image
+      commandLine: |
+        bash -c '
+          # Install SDKMAN!
+          curl -s "https://get.sdkman.io " | bash &&
+          source "$HOME/.sdkman/bin/sdkman-init.sh" &&
+
+          # Install JDKs
+          sdk install java 11.0.22-open
+          sdk install java 17.0.10-open
+          sdk install java 21.0.2-open
+
+          # Set default JDK
+          sdk default java 21.0.2-open &&
+
+          # Install other tools
+          sdk install nodejs
+          sdk install python
+          sdk install go
+
+          echo "✅ SDKMAN! setup complete with Java 11, 17, 21, Node.js, Python, Go"
+        '
+      label: "Setup SDKMAN and required runtimes"
+events:
+  postStart:
+    - setup-sdkman
